@@ -1,0 +1,216 @@
+<style type="text/css">
+
+  .posts {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: calc(-50vw + 75%);
+    width: auto;
+    {{#sticky_navigation}}
+    padding-top: calc({{spacing}}rem + 1.4em);
+    {{/sticky_navigation}}
+  }
+
+  @media (max-width: 768px) {
+    .posts {
+      margin-right: 0;
+    }
+  }
+
+  .post {
+    position: relative;
+    padding: 0.8rem;
+    width: 25%;
+    cursor: zoom-in;
+    box-sizing: border-box;
+    font-size: 13px;
+    color: #aaa;
+    text-decoration: none;
+    text-align: center;
+    border: none !important;
+    display: none;
+  }
+
+  {{#is.thumbnail_size}}
+    {{#small}}
+    .post {width: 33.3333%;}
+    @media screen and (min-width: 540px) {.post {width: 25%;}}
+    @media screen and (min-width: 800px) {.post {width: 20%;}}
+    @media screen and (min-width: 1000px) {.post {width: 16.666667%;}}
+    @media screen and (min-width: 1200px) {.post {width: 14.285714%;}}
+    {{/small}}
+    {{#medium}}
+    .post {width: 50%;}
+    @media screen and (min-width: 540px) {.post {width: 33.3333%;}}
+    @media screen and (min-width: 800px) {.post {width: 33.3333%;}}
+    @media screen and (min-width: 1000px) {.post {width: 25%;}}
+    @media screen and (min-width: 1200px) {.post {width: 20%;}}
+    {{/medium}}
+    {{#large}}
+    .post {width: 100%;}
+    @media screen and (min-width: 540px) {.post {width: 100%;}}
+    @media screen and (min-width: 800px) {.post {width: 50%;}}
+    @media screen and (min-width: 1000px) {.post {width: 50%;}}
+    @media screen and (min-width: 1200px) {.post {width: 33.3333%;}}
+    {{/large}}
+    {{#huge}}
+    .post {width: 100%;}
+    {{/huge}}
+  {{/is.thumbnail_size}}
+
+  .post .thumbnail .container {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+  }
+
+  .post .thumbnail {
+    box-sizing: border-box;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    display: block;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 1.3rem;
+  }
+
+  .post .thumbnail:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid transparent;
+  }
+
+  .post:active {
+    opacity: 0.7;
+  }
+
+  .post img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    margin: 0 auto;
+    object-fit: cover;
+  }
+
+  .pre-loaded {
+    visibility: hidden;
+    opacity: 0;
+    will-change: opacity;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .loaded {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+
+  .yield {
+    padding: 0 {{spacing}}rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.css">
+
+<div class="yield">
+  <div class="posts" id="gallery">
+    {{#allEntries}}
+      {{#dependencies}}
+        <a href="{{#cdn}}{{{.}}}{{/cdn}}" 
+           class="post zoomable"
+           data-path="{{.}}"
+           data-tags="{{#tags}}{{slug}},{{/tags}}"
+           data-pswp-width="1600"
+           data-pswp-height="1600"
+           target="_blank">
+          <span class="thumbnail">
+            <span class="container">
+              <img
+                class="pre-loaded"
+                onload="this.className='loaded'"
+                alt="{{title}}"
+                data-src="{{#cdn}}{{{.}}}{{/cdn}}"
+              >
+            </span>
+          </span>
+        </a>
+      {{/dependencies}}
+    {{/allEntries}}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var posts = document.querySelectorAll('[data-path]');
+    var visibleCount = 0;
+
+    posts.forEach(function(post) {
+      var path = post.getAttribute('data-path');
+      var tags = post.getAttribute('data-tags') || '';
+
+      var inGalleryFolder = path && path.startsWith('/Gallery/');
+      var hasGalleryTag = tags.indexOf('gallery') !== -1;
+
+      if (inGalleryFolder || hasGalleryTag) {
+        post.style.display = 'block';
+        visibleCount++;
+        
+        var img = post.querySelector('img[data-src]');
+        if (img) {
+          img.src = img.getAttribute('data-src');
+        }
+      } else {
+        post.remove();
+      }
+    });
+
+    if (visibleCount === 0) {
+      var container = document.querySelector('.posts');
+      if (container) {
+        container.innerHTML = '<p style="padding:2rem;color:#999;">No gallery images found.</p>';
+      }
+    }
+  });
+</script>
+
+<script type="module">
+  import PhotoSwipeLightbox from 'https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe-lightbox.esm.min.js';
+  
+  const lightbox = new PhotoSwipeLightbox({
+    gallery: '#gallery',
+    children: 'a.post',
+    pswpModule: () => import('https://cdn.jsdelivr.net/npm/photoswipe@5/dist/photoswipe.esm.min.js'),
+  });
+
+  lightbox.on('uiRegister', function() {
+    lightbox.on('contentLoad', (e) => {
+      const { content } = e;
+      if (content.type === 'image') {
+        const img = new Image();
+        img.onload = () => {
+          content.width = img.naturalWidth;
+          content.height = img.naturalHeight;
+          content.instance.updateSize(true);
+        };
+        img.src = content.data.src;
+      }
+    });
+  });
+
+  lightbox.init();
+</script>

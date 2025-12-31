@@ -24,6 +24,19 @@
       "font_size": 16,
       "styles": ""
     },
+    "grid_layout": "bookshelf",
+    "grid_layout_options": [
+      "square",
+      "bookshelf"
+    ],
+    "infinite_scroll": true,
+    "thumbnail_size": "large",
+    "thumbnail_size_options": [
+      "small",
+      "medium",
+      "large",
+      "huge"
+    ],
     "demo_folder": "plants",
     "template_categories": [
       "writing"
@@ -76,6 +89,9 @@
         "title": "{{{entry.title}}} - {{{title}}}",
         "description": "{{{entry.summary}}}"
       }
+    },
+    "gallery.html": {
+      "url": "/gallery"
     },
     "tagged.html": {
       "partials": {

@@ -26,14 +26,12 @@
 				{{#avatar}}<img class="avatar v-btm" src="{{{avatar}}}">{{/avatar}}
 				{{^avatar}}{{title}}{{/avatar}}
 			</a>
-			<!-- <div class="clip-3 mt5 mb5" style="text-transform: lowercase;"> -->
-			<!-- {{#popular_tags}} -->
-				<!-- <a href="/tagged/{{slug}}"  class="no-underline no-wrap db f3 fw3 black-50"  title="{{slug}}">{{name}}</a> -->
-			<!-- {{/popular_tags}} -->
-			<!-- </div> -->
 			{{#menu}}
 			<a href="{{{url}}}"  class="no-underline no-wrap db black-80 f4 fw6 "  title="{{label}}">{{label}}</a>
 			{{/menu}}
 			<a id="top_button" style="position:absolute;bottom:0;width:3rem;height:3rem;line-height:3rem;" class="mb3 white bg-black-20 lh-title br-100 f3 db tc bn no-underline" href="#top">↑</a>
+			<div id="sidebar-bottom-links" style="position:absolute;bottom:11rem;">
+				<a id="site-info"  href="/about-this-website">about this website</a>
+			</div>
 		</div>
 		<div class="page-container barba-container b--black-10 relative" >

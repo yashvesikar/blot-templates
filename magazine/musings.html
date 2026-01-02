@@ -40,18 +40,22 @@
 
 <div class="clip-1 mt3 featured-entry" style="display:flex;flex-direction:row;flex-wrap:  wrap">
   {{#all_entries}}
+  {{^tagged.gallery}}
   {{#first}}
   {{#thumbnail.large.url}}
   {{> featured}}
   {{/thumbnail.large.url}}
   {{/first}}
+  {{/tagged.gallery}}
   {{/all_entries}}
 </div>
 
 <div style="display:flex;flex-direction:row;flex-wrap:wrap"   {{#all_entries}} {{#first}} {{#thumbnail.large}} class="skip-1" {{/thumbnail.large}} {{/first}} {{/all_entries}}>
 
   {{#all_entries}}
+  {{^tagged.gallery}}
   {{> entry_line}}
+  {{/tagged.gallery}}
   {{/all_entries}}
 </div>
 
@@ -63,7 +67,9 @@
 {{#pagination.previous}}
 
 {{#all_entries}}
+{{^tagged.gallery}}
 {{> entry_line}}
+{{/tagged.gallery}}
 {{/all_entries}}
 {{/pagination.previous}}
 
